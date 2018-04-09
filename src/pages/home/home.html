@@ -1,14 +1,82 @@
+<!-- ============================================================================================= -->
+<!--                                                                                               -->
+<!-- File: home.html                                                                               -->
+<!-- Date: April 7, 2018                                                                           -->
+<!-- Author: Susan G. Conger                                                                       -->
+<!--                                                                                               -->
+<!-- Description                                                                                   -->
+<!--   This is the main html for the CrossComm Remote Programing Challenge -> Tablizer.            -->
+<!--   The screen is set up date cards.  First card is the data entery card.  Second card is the   -->
+<!--   2D array results. Third card is the results as a table. A simple menu is included           -->
+<!--                                                                                               -->
+<!-- Modification                                                                                  -->
+<!--   04/07/2018 SGC V1.0.0.0 Initial Creation                                                    -->
+<!--                                                                                               -->
+<!--                                                                                               -->
+<!-- ============================================================================================= -->
+<!--                     Copyright 2018, by Susan G. Conger All rights reserved                    -->
+<!-- ============================================================================================= -->
 <ion-header>
+
+<!--  
+ Put the menu and the title on the screen 
+-->
+
   <ion-navbar>
+    <button ion-button [menuToggle]="activeMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title>
-      Ionic Blank
+        Tablizer -- CrossComm Remote Programming Challenge
     </ion-title>
   </ion-navbar>
+
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
-</ion-content>
+<!--  
+ Define the cards.  Card 1 is for Data Entry, Card 2 2D array results, Card 3 html table result 
+-->
+
+<ion-content class="cards-bg">  
+
+  <ion-card>
+    <ion-card-header>
+      Enter the Data 
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-input [(ngModel)]="displayData" placeholder="[[1,2],[3,4,5]]" clearInput>initial value</ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input [(ngModel)]="rowColunmData" placeholder="[{1:[2,1]},{2:[1,3]}]" clearInput>initial value</ion-input>
+        </ion-item>
+      </ion-list>   
+      <button ion-button icon-center (click)="display_results()">
+        <ion-icon name="build"></ion-icon>
+        &nbsp;&nbsp;Build
+      </button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Resulting 2D Array
+    </ion-card-header>
+    <ion-card-content >
+        <div align="left" name="results2DDispayData" class="results2DDispayData" id="results2DDispayData"></div>
+        <div align="left" name="results2DRowColumn" class="results2DRowColumn" id="results2DRowColumn"></div>  
+        <div align="center" name="results2DString" class="results2DString" id="results2DString"></div>    
+      </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Resulting HTML Table
+    </ion-card-header>
+    <ion-card-content >
+      <div align="center" name="resultsTable" class="resultsTable" id="resultsTable"></div>    
+    </ion-card-content>
+  </ion-card>
+  
+  </ion-content>
