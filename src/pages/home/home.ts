@@ -18,16 +18,35 @@
 //  =============================================================================================
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { isUndefined, isBlank, isNumber } from 'ionic-angular/util/util';
+//import { isUndefined, isBlank, isNumber } from 'ionic-angular/util/util';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
+
+
+/************************************************************ 
+ * Method -- validate_input   Author: Susan G. Conger
+ *   Parameters In -- The field name to validate.  I would pass the data but if the user enters
+ *                  numbers separated by a ; then the data is not sent.  
+ *   Parameters Out -- None
+ *   Parameters In/Out -- None
+ *   Returns -- Nothing
+ *
+ * Description 
+ *   Switches off of the name of the data field assign the input array.  If there is an error
+ *   the user is informed.  This could be better.  It is just rudamentary.
+ *
+ * Modifcation
+ *    04/07/2018 SGC V1.0.0.0 Initial Creation     
+ *************************************************************/                                              
 export class HomePage {
  
   displayData : string = '[["1","2"],["3","4","5"]]'; // Holds the data to be displayed
   rowColunmData : string = '[{"1":[2,1]},{"2":[1,3]}]';  // Holds the row and column information
+  dispData: any;          // Array for display data
+  rowColData: any;        // Array for row column data
 
   results2D: string;      // Holds the resulting 2D array string
   resultsTable: string;   // Holds an HTML Table representing the data
@@ -43,88 +62,32 @@ export class HomePage {
 //   Returns -- Nothing
 //
 // Description 
-//   Switches off of the name of the data field to verify that its is a numeric comma separated
-//   string.  
+//   Switches off of the name of the data field assign the input array.  If there is an error
+//   the user is informed.  This could be better.  It is just rudamentary.
 //
 // Modifcation
 //    04/07/2018 SGC V1.0.0.0 Initial Creation     
 //                                              
   validate_input (userData) {
-
-//    alert(userData + ": " + this.dataRow1);
-//    var regularExpressionStr = "^((\d?)|(([-+]?\d+\.?\d*)|([-+]?\d*\.?\d+))|(([-+]?\d+\.?\d*\,\ ?)*([-+]?\d+\.?\d*))|(([-+]?\d*\.?\d+\,\ ?)*([-+]?\d*\.?\d+))|(([-+]?\d+\.?\d*\,\ ?)*([-+]?\d*\.?\d+))|(([-+]?\d*\.?\d+\,\ ?)*([-+]?\d+\.?\d*)))$";
-  };
-
-  validate_key_stroke(userData) {
-
-    var dataToVerify = "";
-    var dataType = "Numeric"
-
-// We have different rules depending on the data row
-    if (userData == "displayData") {
-      dataToVerify = this.displayData;
-      dataType = "Numeric";
-    }
-    else if (userData == "rowColunmData") {
-      dataToVerify = this.rowColunmData;
-      dataType = "PositiveInteger";
-    }
-
-// Only handle the event once for each key stroke. If the data is blank just return
-    if (isUndefined(dataToVerify) || isBlank(dataToVerify)) {
+    try {
+      if (userData==="rowColunmData") {
+        this.rowColData = eval(this.rowColunmData);
+      }
+      else {
+        this.dispData = eval(this.displayData);
+      }
+      return true;
+    } 
+    catch(e) {
+      if (userData==="rowColunmData") {
+        alert("Format Error in Row Column Data field.  Please check the field and try again");
+      }
+      else {
+        alert("Format Error in Diplay Data field.  Please check the field and try again");
+      }
+      console.log(e);
       return false;
     }
-
-// If we are verifying a number then we can allow for the following:
-//   -number(.(number)), or any combination.
-    if (dataType == "Numeric") {
-
-      if (isNumber (dataToVerify)) {
-          return true;
-      }
-
-      else {
-        if (dataToVerify.length == 1) {
-          if ((dataToVerify.charAt(0) == '-') || (isNumber(dataToVerify.charAt(0)))) {
-            return true;
-          }
-          else {
-            if (userData == "displayData") {
-              this.displayData = "";
-            }
-            else {
-              this.rowColunmData = "";
-            }
-            return false;        
-          }
-        }
-        else {
-          var charToVerify = dataToVerify.charAt(dataToVerify.length-1);
-          var prevChar = dataToVerify.charAt(dataToVerify.length-2);
-          if (prevChar == "-") {
-            if (isNumber(charToVerify)) {
-              return true;
-            }
-            else {
-              if (userData == "displayData") {
-                this.displayData = dataToVerify.substr(0, dataToVerify.length-1);
-              }
-              else {
-                this.rowColunmData = dataToVerify.substr(0, dataToVerify.length-1);
-              }
-              return false;
-            }
-          }
-          else {
-            if (isNumber(prevChar)) {
-              if ((charToVerify == '.') || (charToVerify == ",")) {
-                 return true;
-              }
-            }
-          }
-        }
-      }
-    }    
   };
 
 // 
@@ -145,8 +108,8 @@ export class HomePage {
 
 // Values used for testing 
 //    var rowColData = [{"1":[2,1]},{"2":[1,3]}];
-    var rowColData = [{"1":[1,1]},{"2":[1,1]}];
-    var rowColDataStr = '[{"1":[1,1]},{"2":[1,1]}]';
+//    var rowColData = [{"1":[1,1]},{"2":[1,1]}];
+//    var rowColDataStr = '[{"1":[1,1]},{"2":[1,1]}]';
 //    var rowColData = [{"1":[2,1]},{"2":[1,3]}];
 //    var rowColData = [{"1":[2,1]},{"2":[1,3]}];
 //    var rowColData = [{"1":[2,1]},{"2":[1,3]}];
@@ -155,18 +118,17 @@ export class HomePage {
 //    var rowColData = [{"1":[2,1]},{"2":[1,3]}];
 //    var rowColData = [{"1":[2,1]},{"2":[1,3]}];
 
-    var dispData = [[1,2],[3,4,5]]
-    var dispDataStr = '[["1","2"],["3","4","5"]]';
-//var dispData = [[a,b],[c,d,e]]
-//var dispData = [[@,$],[%,^,#]]
+//    var dispData = [[1,2],[3,4,5]]
+//    var dispDataStr = '[["1","2"],["3","4","5"]]';
+//    var dispData = [[a,b],[c,d,e]]
+//    var dispData = [[@,$],[%,^,#]]
 
 // Update the display variables on the value being used so the user knows
-// what is going on
-    this.displayData = dispDataStr;
-    this.rowColunmData = rowColDataStr;
-
-    this.generate_2D_Array_String(dispData, rowColData);
-    this.generate_HTML_Table_String(dispData, rowColData);
+// what is going on... make sure the data is correct before we begin.
+    if ((this.validate_input('displayData')) && ( this.validate_input('rowColunmData'))) {
+      this.generate_2D_Array_String(this.dispData, this.rowColData);
+      this.generate_HTML_Table_String(this.dispData, this.rowColData);
+    }
   }
 
 // 
@@ -187,12 +149,15 @@ export class HomePage {
   generate_2D_Array_String(dispData, rowColData) {
 
     var resultArray = new Array();
+    var rowPosition = 0;
+    var columnPosition = 0;
+    var nullArray = new Array();
     
 // Calculate the maximum items in the array    
     var maxItems = 0;
-    for (var i = 0; i < dispData.length; i++) {
-       if (maxItems < dispData[i].length) {
-         maxItems = dispData[i].length;
+    for (var m = 0; m < dispData.length; m++) {
+       if (maxItems < dispData[m].length) {
+         maxItems = dispData[m].length;
        }
     }
 
@@ -206,53 +171,84 @@ export class HomePage {
     }
 
 // Set up the array so every is initiallized to NULL    
-    for (var i = 0; i < rowColData.length; i++) {
+    for (var a = 0; a < rowColData.length; a++) {
       resultArray.push( [] );
     }
 
 // Loop through the data and convert to a 2D array.
 // **NOTE:  I feel there may be a better way to do this.  Maybe a pattern or
 //          some type of recursion.  But I could not see it so I used the
-//          brute force method.    
+//          brute force method. 
     for (var i = 0; i < dispData.length; i++) {
-      for (var j = 0; j < dispData[i].length; j++) {
-        if(!(typeof rowColData[i] === 'undefined')) {
-          if(!(typeof rowColData[i][i+1] === 'undefined')) {
-            if(!(typeof rowColData[i][i+1][j] === 'undefined')) {
-              if (rowColData[i][i+1][j] === 2) {
-                resultArray[i].push(dispData[i][j]);
-                if(!(typeof resultArray[i+1] === 'undefined')) {
-                  resultArray[i+1].push("NULL");
-                }
-              }
-              else  {
-                resultArray[i].push(dispData[i][j]);
-              }
-            }
-            else {
-              resultArray[i].push(dispData[i][j]);
-            }
-          }  
-          else {
-            resultArray[i].push(dispData[i][j]);
-          }
-        }  
-        else {
-          resultArray[i].push(dispData[i][j]);
-        }
+      rowPosition++;
+      columnPosition = 0;
+
+// Skip over any leading nulls
+      if(!(typeof resultArray[i] === 'undefined')) {
+        columnPosition = resultArray[i].length;
       }
+
+      for (var j = 0; j < dispData[i].length; j++) {
+
+// We multiple i by 2 when getting the data because there are 2 rows of data
+// for each one row of display data.        
+        var rowSpan = this.getRowSpan(rowColData,i*2,j,0);
+        var colSpan = this.getColSpan(rowColData,i*2,j,1);
+  
+// Now that we have the rowSpan and colSpan handle it for the given item
+// First do the row then do the column
+        var n = 0;
+        while (n < nullArray.length) {
+          if ((nullArray[n] === rowPosition) && (nullArray[n+1] === columnPosition)) {
+            resultArray[i].push("NULL");
+            columnPosition++
+            nullArray[n] === "NULL";            
+            nullArray[n+1] === "NULL";
+            break;            
+          }
+          n = n + 2;
+        }
+        resultArray[i].push(dispData[i][j]);
+        columnPosition++
+// Offset the Loop so we add to the correct location.  In order for the looping
+// to happen correctly we have to start at 1 but we have already increamented
+// the rowPostion.  Therefore we have to subtract 1 from so it is correct.        
+        for (var r = 1, rPos = (rowPosition-1); r < rowSpan; r++) {
+          if(!(typeof resultArray[r+rPos] === 'undefined')) {
+
+// Store that we need to add some nulls before we can put the numbers in            
+            if (columnPosition > 1) {
+              nullArray.push(r+rPos+1);
+              nullArray.push(columnPosition-1);
+            }
+// We can add the null right now             
+            else {
+              resultArray[r+rPos].push("NULL");
+            }
+          }        
+        }
+
+// Now move across the columns        
+        for (var c = 1; ((c < colSpan) && (c < maxItems-1)); c++) {
+            resultArray[i].push("NULL");
+            columnPosition++;
+          }        
+      }
+
+// Make sure that all items have NULL      
       for (var k = resultArray[i].length; resultArray[i].length < maxItems; k++) {
         resultArray[i].push("NULL");
-      }
-    }
+      } 
 
+    }
+    
 // Loop through the resultArray and generate a nice string.  
 // I tried to String but it was not formatted nicely
     var resultString = "[";
-    for (var i = 0; i < resultArray.length; i++) {
+    for (var s = 0; s < resultArray.length; s++) {
       resultString = resultString + "[";
-      for (var j = 0; j < resultArray[i].length; j++) {
-        resultString = resultString + resultArray[i][j] + ",";        
+      for (var t = 0; t < resultArray[s].length; t++) {
+        resultString = resultString + resultArray[s][t] + ",";        
       }
       if (resultString.endsWith(",")) {
         resultString = resultString.substr(0,resultString.length-1);
@@ -268,6 +264,69 @@ export class HomePage {
     this.update_2DArray_String(resultString);
    
   }
+
+// 
+// Method -- getRowSpan   Author: Susan G. Conger
+//   Parameters In -- rowColData - Holds the row span and column span 
+//                    rElement - Array position
+//                    rElement - item in array
+//   Parameters Out -- None
+//   Parameters In/Out -- None
+//   Returns -- number that has rowSpan.
+//
+// Description 
+//   Takes the rowColunmData and determine the rowSpan for the given Element,Item
+//   and returns
+//
+// Modifcation
+//    04/08/2018 SGC V1.0.0.0 Initial Creation     
+//                                              
+  getRowSpan(rowColunmData, rIndex, rElement, rItem) {
+
+// Check if the Row Span data is avialable for this item.  If it is not then assume 1
+    if(!(typeof this.rowColData[rIndex+rElement] === 'undefined')) {
+      var spanInfo = this.rowColData[rIndex+rElement];
+      if (spanInfo.hasOwnProperty(rElement+1)) {
+        return (spanInfo[rElement+1][rItem]);
+      }
+    }
+    
+// If the Element does not have a colSpan then return the default 1
+    return 1;
+  }
+  
+
+// 
+// Method -- getColSpan   Author: Susan G. Conger
+//   Parameters In -- rowColData - Holds the row span and column span 
+//                    rElement - Array position
+//                    rElement - item in array
+//   Parameters Out -- None
+//   Parameters In/Out -- None
+//   Returns -- number that has colSpan.
+//
+// Description 
+//   Takes the rowColunmData and determine the colSpan for the given Element,Item
+//   and returns
+//
+// Modifcation
+//    04/08/2018 SGC V1.0.0.0 Initial Creation     
+//                                              
+  getColSpan(rowColunmData, rIndex, rElement, rItem) {
+
+// Check if the Row Span data is avialable for this item.  If it is not then assume 1
+    if(!(typeof this.rowColData[rIndex+rElement] === 'undefined')) {
+      var spanInfo = this.rowColData[rIndex+rElement];
+      if (spanInfo.hasOwnProperty(rElement+1)) {
+        return (spanInfo[rElement+1][rItem]);
+      }
+    }
+  
+// If the Element does not have a colSpan then return the default 1
+    return 1;
+  }
+  
+  
 
 // 
 // Method -- generate_HTML_Table_String   Author: Susan G. Conger
@@ -353,36 +412,41 @@ export class HomePage {
 // Modifcation
 //    04/08/2018 SGC V1.0.0.0 Initial Creation     
 //                                              
-update_2DArray_String(resultStr) {
+  update_2DArray_String(resultStr) {
 
 // Dynamically update the HTML so it display the Display data with the result  
-  var res2DElement = document.body.getElementsByClassName("results2DDispayData");
-  if (res2DElement != null) {
-    var results2DNode = res2DElement.item(0);
-    if (results2DNode != null) {
-      results2DNode.innerHTML = "Display Data: " + this.displayData;
+    var res2DElement = document.body.getElementsByClassName("results2DDispayData");
+    if (res2DElement != null) {
+      var results2DDisplayNode = res2DElement.item(0);
+      if (results2DDisplayNode != null) {
+        results2DDisplayNode.innerHTML = "Display Data: " + this.displayData;
+      }
     }
-  }
 
 // Dynamically update the HTML so it display the Row Column data with the result  
-  res2DElement = document.body.getElementsByClassName("results2DRowColumn");
-  if (res2DElement != null) {
-    var results2DNode = res2DElement.item(0);
-    if (results2DNode != null) {
-      results2DNode.innerHTML = "Row Column Data: " + this.rowColunmData;
+    res2DElement = document.body.getElementsByClassName("results2DRowColumn");
+    if (res2DElement != null) {
+      var results2DRowColNode = res2DElement.item(0);
+      if (results2DRowColNode != null) {
+        results2DRowColNode.innerHTML = "Row Column Data: " + this.rowColunmData;
+      }
     }
-  }
 
 // Dynamically update the data so it displays the resulting 2D Array String  
-  res2DElement = document.body.getElementsByClassName("results2DString");
+    res2DElement = document.body.getElementsByClassName("results2DString");
 
-  if (res2DElement != null) {
-    var results2DNode = res2DElement.item(0);
-    if (results2DNode != null) {
-      results2DNode.innerHTML = resultStr;
+    if (res2DElement != null) {
+      var results2DNode = res2DElement.item(0);
+      if (results2DNode != null) {
+        results2DNode.innerHTML = resultStr;
+      }
     }
   }
 }
+/************************************************************ 
+ *  End of Class HopePage                   
+ ************************************************************/
 
-
-}
+//  =============================================================================================
+//                      Copyright 2018, by Susan G. Conger All rights reserved                   
+//  =============================================================================================
